@@ -1,11 +1,69 @@
 ---
 title: Animated Texture
+location: /animated-texture
 article: true
 ---
 
 Animating a texture in Figura works differently than in resource packs. Instead of a `.mcmeta` file, we use `ModelPart:setUV(u,v)` to change the texture coordinates a cube is using.
 
 In this tutorial we are going to make a blinking animation. To make it a little easier, I have gone ahead and separated the face from the rest of the head. This is technically optional, but makes things easier because I only want the face to change, and not the entire head, since in figura we can only change UVs of the whole cube at once. (Duplicate the head cube, set the front face to transparent on the head, and all other sides except for the face to transparent on the duplicate. Make sure to be in Per-Face-UV mode for this)
+
+<details>
+
+<summary>[Click to expand] Advanced: A way to change UV of only a single face on a cube.</summary>
+
+If you do not want to split up a cube but still want to animate only one of its faces, here is a snippet for you! This snippet adds both a `setFaceUV` and a `setFaceUVPixels` function. Use the same way as the normal uv functions, except add the names of faces you want to change at the end. For example you can do 
+`models.model.Head:setFaceUVPixels(u, v, "north")` or `models:setFaceUV(u, v, "north", "east", "up")` or even `models:setFaceUVPixels(vec(u, v), "south")`.
+
+```lua
+do
+  local orig = {}
+  local fmap = {north=0,south=1,east=2,west=3,up=4,down=5}
+  local _idx = figuraMetatables.ModelPart.__index
+  function figuraMetatables.ModelPart.__index(self, idx)
+    if idx == "setFaceUV" or idx == "setFaceUVPixels" then
+      return function(slf, u, v, ...)
+        local fcs = {...}
+        if type(u):match("^Vector%d$") then
+          table.insert(fcs, v)
+          v = u.y
+          u = u.x
+        end
+        assert(#fcs>0, "No faces were given.")
+        if slf:getType() == "GROUP" then
+          for _, child in ipairs(slf:getChildren()) do
+            child[idx](child, u, v, table.unpack(fcs))
+          end
+        end
+        if slf:getType() ~= "CUBE" then return end
+        local verts, dims
+        for tex, vs in pairs(slf:getAllVertices()) do
+          assert(verts == nil, "Face UV only works if there is only one texture on the cube.")
+          dims = idx:find("Pixels") and vec(1,1) or textures[tex]:getDimensions()
+          verts = vs
+        end
+        for _, face in ipairs(fcs) do
+          assert(fmap[face], 'Face "'..face..'" does not exist. The available faces are: ['..(function()
+            local s = ""
+            for k in pairs(fmap) do s=s..'"'..k..'", 'end
+            return string.sub(s,1,#s-2)
+          end)()..']')
+          local i = fmap[face]*4+1
+          for j=0,3 do
+            orig[verts[i+j]] = orig[verts[i+j]] or verts[i+j]:getUV()
+            verts[i+j]:setUV(orig[verts[i+j]] + vec(u,v) * dims)
+          end
+        end
+      end
+    end
+    return _idx(self, idx)
+  end
+end
+```
+
+</details>
+
+<br>
 
 ![Face and Head separated](./assets/model-1.gif)
 
@@ -23,6 +81,31 @@ function events.tick()
     models.model.Head.Face:setUV(time/8,0) -- use it to shift the UV
 end
 ```
+
+Just to note, we will mostly just use `world.getTime()` in this tutorial because it is shorter if we dont need fine control over the timer, but it is effectively the same as just making a timer increase by 1 every tick like this:
+
+```lua
+local frame = 0 -- new timer variable to count ticks
+function events.tick()
+    frame = frame + 1 -- increase timer ourselves
+    models.model.Head.Face:setUV(frame/8,0) -- use exactly the same as world time
+end
+```
+
+<details>
+
+<summary>[Click to expand] Advanced: When not to use world.getTime() ?</summary>
+
+There are two reasons why you might not want to use world.getTime().
+
+For one, if you want more control when exactly your timer is allowed to increase or you also want to be able to reset the timer, for example for a sort of cooldown, or for more control over the animation (which we will do later in this tutorial as well), then making a custom timer variable is the way to go.
+
+And secondly, if your program depends on a perfectly increasing timer to function, then you should not use world.getTime() as the time value it gives you can sometimes jump and skip some values if the minecraft server and your client become out of sync. In such a case the server sends the accurate world time to your client, making the time value jump and potentially skip over some values. This does not happen if you make a custom timer.
+
+</details>
+
+<br>
+
 We don't even have to clamp the time value in between 0 and 7 because `setUV` just cycles around the texture if the value overflows.
 
 ![Animation in game](./assets/minecraft-1.gif)

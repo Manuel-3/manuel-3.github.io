@@ -8,5 +8,5 @@ location: /
 - [Lua Quickstart](/lua-quickstart)
 - [Figura Lua Scripts](/figura-scripts)
 - [Animated Texture](/animated-texture)
-- [Figura Misconceptions](/figura-misconceptions)
+- [Ping Misconceptions](/ping-misconceptions)
 - [Custom Armor](/custom-armor)

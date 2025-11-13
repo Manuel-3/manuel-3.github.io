@@ -45,7 +45,7 @@ Now that you understand how scripts are executed and what pings do exactly, you 
 
 ### What is a reliable way of knowing if information is already available or not?
 
-You already know the trick to just think about what information you can see on other players. But that is not always 100% reliable. For example, Minecraft itself for some reason does not actually tell you if someone is currently using creative flight. Even though you can technically see them floating in the air, the information you have is just the position of that player, not actually wheter or not they have flight active or not. A similar thing happens for status effects (potion effects), even though you can see potion particles on other players, the Minecraft server actually only sends commands to spawn particles in the world, and does not tell you what potion effect that player actually has.
+You already know the trick to just think about what information you can see on other players. But that is not always 100% reliable. For example, Minecraft itself for some reason does not actually tell you if someone is currently using creative flight. Even though you can technically see them floating in the air, the information you have is just the position of that player, not actually whether or not they have flight active or not. A similar thing happens for status effects (potion effects), even though you can see potion particles on other players, the Minecraft server actually only sends commands to spawn particles in the world, and does not tell you what potion effect that player actually has.
 
 But Figura makes these things very clear by introducing the `HostAPI`. Any code that starts with `host` is giving you things that **are only known by you** and not other players! (e.g. `host:getStatusEffects()`, `host:isFlying()`). The term "host" in Figura is describing the instance of the script that is running on the player that owns the avatar. Quick tip: you can use `host:isHost()` which returns true if the current script is running as host (you the owner on your pc), or false if it runs on anyone elses PC.
 
@@ -82,6 +82,7 @@ function events.tick()
     if isCrouching and not wasCrouching then
         sounds:playSound("fart", player:getPos())
     end
+    wasCrouching = isCrouching
 end
 ```
 
@@ -92,8 +93,9 @@ local wasCrouching = false
 function events.tick()
     local isCrouching = player:isCrouching()
     if isCrouching and not wasCrouching then
-        models.model.World.Statue:setPos(player:getPos()*16)
+        models.model.World.Statue:setPos(player:getPos()*16) -- This line is the only difference to above
     end
+    wasCrouching = isCrouching
 end
 ```
 

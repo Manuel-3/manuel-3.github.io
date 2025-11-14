@@ -27,11 +27,28 @@ const frontmatter = thePost!.frontmatter;
 
 const rawContentWithoutDetails = thePost!.rawContent().replace(/<details>[\s\S]*?<\/details>/g, '');
 const readingTime = Math.ceil(rawContentWithoutDetails.split(/[^A-Za-z0-9_]+/).length / 200);
+
+let depth = 0;
+let tableOfContents = "";
+const headings = thePost?.getHeadings();
+if (headings) {
+  for (const heading of headings) {
+    if (heading.depth > depth) {
+      depth = heading.depth;
+      tableOfContents += "<ul>"
+    }
+    else if (heading.depth < depth) {
+      depth = heading.depth;
+      tableOfContents += "</ul>"
+    }
+    tableOfContents += `<li><a href="#${heading.slug}">${heading.text}</a></li>`
+  }
+}
 ---
 
 <style>
   .container {
-		max-width: var(--blog-content-width);
+		max-width: 55rem;
 		margin: auto;
     padding: 1rem;
     padding-top: 0;
@@ -66,15 +83,92 @@ const readingTime = Math.ceil(rawContentWithoutDetails.split(/[^A-Za-z0-9_]+/).l
   }
 </style>
 
+<style is:global>
+  #table-of-contents h3 {
+    text-align: center;
+  }
+  #table-of-contents {
+    /* display flex is in inline css */
+    align-items: center;
+
+    position: fixed;
+    padding-left: 1rem;
+    padding-right: 2rem;
+    max-width: 100%;
+    background-color: var(--theme-background-color);
+    border-radius: 1rem 0 0 1rem;
+
+    transform: translateX(100%);
+    transition: transform 0.2s ease-in-out, right 0.2s ease-in-out;
+
+    right: 3rem;
+    border: 1px solid var(--purple-light);
+
+    @media screen and (max-width: 75rem) {
+      display: none !important;
+    }
+  }
+  #table-of-contents:hover {
+    right: -1px;
+    transform: translateX(0);
+  }
+  #table-of-contents .leftarrow {
+    color: var(--theme-bright-text-color);
+    font-size: 1.5em;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+  }
+  #table-of-contents:hover .leftarrow {
+    opacity: 0;
+  }
+  #table-of-contents ul {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  #table-of-contents:hover ul {
+    opacity: 1;
+  }
+  #table-of-contents.keep-showing {
+    right: -1px;
+    transform: translateX(100%);
+  }
+
+  #static-table-of-contents {
+    border-radius: 1rem;
+    border: 1px solid var(--purple-light);
+  }
+
+  #static-table-of-contents h3 {
+    padding-left: 1.3rem;
+  }
+</style>
+
 <Layout>
   <div>
     <Navigation title={frontmatter.title}/>
+
+    <div id="table-of-contents" class="keep-showing" style=`display: ${frontmatter.article && tableOfContents != "" ? "flex" : "none"}`>
+      <div>
+        <p class="leftarrow">❮</p>
+      </div>
+      <div>
+        <h3>Table of contents</h3>
+        <div id="table-of-contents-content" set:html={tableOfContents}></div>
+      </div>
+    </div>
+    
     <div class="container">
       <div class="float">
         <button id="scrollToTop" aria-label="Scroll to top">^</button>
       </div>
       {frontmatter.article && 
         <p class="readingTime">~{readingTime} minute read</p>
+      }
+      {frontmatter.article && tableOfContents != "" &&
+        <div id="static-table-of-contents">
+          <h3>Table of contents</h3>
+          <div set:html={tableOfContents}></div>
+        </div>
       }
       <Content/>
     </div>
@@ -83,26 +177,32 @@ const readingTime = Math.ceil(rawContentWithoutDetails.split(/[^A-Za-z0-9_]+/).l
 </Layout>
 
 <script is:inline data-astro-rerun>
-    btn = document.getElementById("scrollToTop");
-    goBackButton = document.getElementById("goBackButton");
+  btn = document.getElementById("scrollToTop");
+  goBackButton = document.getElementById("goBackButton");
+  tableOfContentsElement = document.getElementById("table-of-contents");
 
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 500) {
-        btn.classList.add("show");
-      } else {
-        btn.classList.remove("show");
-      }
-      if (window.scrollY > 50) {
-        goBackButton.classList.remove("outline-on-hover")
-      } else {
-        goBackButton.classList.add("outline-on-hover")
-      }
-    });
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 500) {
+      btn.classList.add("show");
+    } else {
+      btn.classList.remove("show");
+    }
+    if (window.scrollY > 50) {
+      goBackButton.classList.remove("outline-on-hover")
+    } else {
+      goBackButton.classList.add("outline-on-hover")
+    }
+    if (window.scrollY > 50) {
+      tableOfContentsElement.classList.remove("keep-showing")
+    } else {
+      tableOfContentsElement.classList.add("keep-showing")
+    }
+  });
 
-    btn.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+  btn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
     });
+  });
 </script>

@@ -1,6 +1,5 @@
 ---
 import { ClientRouter } from "astro:transitions";
-
 ---
 <!doctype html>
 <html lang="en">
@@ -76,7 +75,7 @@ import { ClientRouter } from "astro:transitions";
     margin: 0;
     z-index: 1000;
     transform: scale(calc(1 / var(--zoom)));
-    @media screen and (max-width: var(--blog-content-width)) {
+    @media screen and (max-width: 55rem) {
       display: none;
     }
   }
@@ -99,7 +98,7 @@ import { ClientRouter } from "astro:transitions";
     --purple-dark: #5b69b3;
 
     --zoom: 1;
-    --blog-content-width: 55rem;
+    --blog-content-width: 990px; /*55rem;*/
     --gradient: linear-gradient(45deg, var(--purple-light) 0%, var(--purple-dark) 100%);
     --gradient-horizonzal: linear-gradient(90deg, var(--purple-light) 0%, var(--purple-dark) 100%);
     --outline-text-shadow-purple: -1px -1px 0 var(--purple-light), 1px -1px 0 var(--purple-light), -1px 1px 0 var(--purple-light), 1px 1px 0 var(--purple-light);
@@ -203,9 +202,9 @@ import { ClientRouter } from "astro:transitions";
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     color: transparent;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
+    background: var(--gradient) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
   }
   p.readingTime {
     font-size: 0.9em;

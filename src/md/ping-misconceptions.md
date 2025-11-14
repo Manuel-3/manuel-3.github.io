@@ -149,7 +149,7 @@ function events.tick()
 end
 ```
 
-## I did all of this but there is still desync
+## I did all of this but there is still desync.
 
 It is kind of getting old now with how many things can still cause desync even after so many precautions. But don't worry, this one will be very intuitive now that you understand all of the concept of script instances on different computers and pings like a pro!
 

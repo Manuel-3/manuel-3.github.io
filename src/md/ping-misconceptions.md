@@ -11,11 +11,11 @@ description: Explanation about the fundamental concept of how exactly Figura scr
 
 This page is meant to explain how Figura actually works behind the scenes, specifically for lua scripts and pings. This should clear up some common misconceptions a lot of Figura beginners have, and make you much more confident when making your lua scripts.
 
-## Misconception "I need pings for anything to work in multiplayer"
+# Misconception "I need pings for anything to work in multiplayer"
 
 Pings are only needed in very specific situations. After reading this section, you should understand exactly when pings are required and when they are not.
 
-### How do scripts even work?
+## How do scripts even work?
 
 The most important thing to understand when writing a Figura script is that your script does not only run on your computer. Actually, when you upload your avatar (models, textures, scripts...) to the cloud, every other player on your server has to download this avatar to their own computers in order to display the avatar on your player character. And that means they also download your script, and **run your script on their own PC**.
 
@@ -25,7 +25,7 @@ This of course also applies for the opposite direction, any avatar from your fri
 
 But what does that mean and why does it matter? Well, if you think about it, if the script is already running on the other peoples computers, running the same functions and logic that you scripted it to do on your own computer, then you dont need to use pings to send more stuff to other people! Neat! Buttttt... there are a few exceptions of course, otherwise pings wouldn't need to exist.
 
-### When do I actually need pings?
+## When do I actually need pings?
 
 What even is a ping? It is really simple: A ping is just like a regular function in lua, except that it also goes across the Figura cloud to every other player that has downloaded your script and runs the function there too. This means you only need a ping if you must send **additional information** to other players **that they do not already know about**.
 
@@ -45,11 +45,11 @@ But if you use a ping, it will notify every other instance of your script to als
 
 So in conclusion, you only need pings if **the information youre using is not available to other people**.
 
-### Do I need a ping to play an animation?
+## Do I need a ping to play an animation?
 
 Now that you understand how scripts are executed and what pings do exactly, you should be able to answer this question. Except... you will notice that this question actually doesn't make any sense. Whether or not you need pings does not depend on **what you are doing**, it actually depends on **what is triggering it**. For example, if you want to play an animation when you walk or swim or whatever other movement a player can make, this of course does not need a ping! Remember, everyone can already see if you are walking. But if you want to play an animation when you click an action in your action wheel, or maybe if you want to play a special animation if you have any arrows anywhere in your inventory, then you must use a ping to let other people know about it! (Can you see another players inventory? No.)
 
-### What is a reliable way of knowing if information is already available or not?
+## What is a reliable way of knowing if information is already available or not?
 
 You already know the trick to just think about what information you can see on other players. But that is not always 100% reliable. For example, Minecraft itself for some reason does not actually tell you if someone is currently using creative flight. Even though you can technically see them floating in the air, the information you have is just the position of that player, not actually whether or not they have flight active or not. A similar thing happens for status effects (potion effects), even though you can see potion particles on other players, the Minecraft server actually only sends commands to spawn particles in the world, and does not tell you what potion effect that player actually has.
 
@@ -73,7 +73,7 @@ So the list of the most important things that require pings is:
     - events.chat_receive_message (both chat message events only run on host)
     - Anything that triggers by something happening at only one point in time
 
-### Hidden desyncs.
+## Hidden desyncs.
 
 There are some situations that you can create in your script that, even with all knowledge you have so far kept in mind, can still cause things to desync in multiplayer. This only happens for relatively advanced things, so if all youre doing is adding some animations and action wheel cosmetics you are fine.
 
@@ -111,7 +111,7 @@ In contrast to the sound from the first snippet, the actual thing we triggered (
 
 And people not being nearby is already bringing us to the next topic...
 
-### When sending pings isn't enough to prevent desyncs.
+## When sending pings isn't enough to prevent desyncs.
 
 Yes you have read that right. If you are using the action wheel, and you are even using pings in the action wheel, it will still desync in multiplayer. 😱
 
@@ -149,7 +149,7 @@ function events.tick()
 end
 ```
 
-### I did all of this but there is still desync
+## I did all of this but there is still desync
 
 It is kind of getting old now with how many things can still cause desync even after so many precautions. But don't worry, this one will be very intuitive now that you understand all of the concept of script instances on different computers and pings like a pro!
 
@@ -233,6 +233,6 @@ function events.tick()
 end
 ```
 
-### You are a pro now!
+## You are a pro now!
 
 Congratulations, you have successfully mastered pings! Anything thrown at you is easily deflected by using pings in the correct situations! Thank you for taking your time reading this guide!

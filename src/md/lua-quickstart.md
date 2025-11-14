@@ -5,7 +5,7 @@ article: true
 description: Short introduction to the lua programming language for absolute beginners.
 ---
 
-This is a beginners guide to programming in Lua. We will only cover the absolute basics you need to know to make simple <a href="https://www.curseforge.com/minecraft/mc-mods/figura" target="_blank" rel="noopener noreferrer">Figura</a> scripts. If you want to learn more about Lua check out the <a href="https://www.lua.org/pil/1.html" target="_blank" rel="noopener noreferrer">Lua Documentation</a>. Here is its <a href="https://www.lua.org/pil/contents.html#1" target="_blank" rel="noopener noreferrer">Table of Contents</a>.
+This is a beginners guide to programming in Lua. We will only cover the absolute basics you need to know to make simple <a href="https://www.curseforge.com/minecraft/mc-mods/figura" target="_blank" rel="noopener noreferrer">Figura ↗</a> scripts. If you want to learn more about Lua check out the <a href="https://www.lua.org/pil/1.html" target="_blank" rel="noopener noreferrer">Lua Documentation ↗</a>. Here is its <a href="https://www.lua.org/pil/contents.html#1" target="_blank" rel="noopener noreferrer">Table of Contents ↗</a>.
 
 # How a computer reads code
 

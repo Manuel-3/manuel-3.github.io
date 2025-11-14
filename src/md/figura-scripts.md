@@ -4,9 +4,9 @@ article: true
 description: Introduction to Figura specific concepts after you have learned the lua basics.
 ---
 
-Now that you [know how to program](/lua-quickstart), you should be able to use <a href="https://figura-wiki.pages.dev/" target="_blank" rel="noopener noreferrer">the wiki</a> to get what you need.
+Now that you [know how to program](/lua-quickstart), you should be able to use <a href="https://figura-wiki.pages.dev/" target="_blank" rel="noopener noreferrer">the wiki ↗</a> to get what you need.
 
-Before you start, note that there is a <a href="https://marketplace.visualstudio.com/items?itemName=Manuel-Underscore.figura" target="_blank" rel="noopener noreferrer">Figura VSCode extension</a> which provides autocomplete for BlockBench models and <a href="https://github.com/GrandpaScout/FiguraRewriteVSDocs" target="_blank" rel="noopener noreferrer">Figura docs</a> to provide autocomplete for all Figura features. (To install in VSCode, click on extensions icon to the left, search for "Figura", click install. Docs need to be downloaded manually.)
+Before you start, note that there is a <a href="https://marketplace.visualstudio.com/items?itemName=Manuel-Underscore.figura" target="_blank" rel="noopener noreferrer">Figura VSCode extension ↗</a> which provides autocomplete for BlockBench models and <a href="https://github.com/GrandpaScout/FiguraRewriteVSDocs" target="_blank" rel="noopener noreferrer">Figura docs ↗</a> to provide autocomplete for all Figura features. (To install in VSCode, click on extensions icon to the left, search for "Figura", click install. Docs need to be downloaded manually.)
 
 # Basics
 

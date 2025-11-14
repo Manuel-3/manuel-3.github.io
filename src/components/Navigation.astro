@@ -1,0 +1,88 @@
+---
+const backButton: boolean = Astro.props.backButton ?? true;
+---
+<style>
+  .navigation {
+    background-image: var(--gradient);
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: .8rem;
+    padding-top: 2rem;
+    color: white;
+    font-weight: 800;
+    letter-spacing: 0.15rem;
+  }
+  nav {
+    padding-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+  nav a {
+    font-weight: 400;
+    font-size: .9em;
+    color: white;
+  }
+  .float {
+    position: fixed;
+    top: 0.1rem;
+    left: 1rem;
+    font-size: 3rem;
+    color: white;
+    z-index: 1000;
+    transform: scale(calc(1 / var(--zoom)));
+    padding: 0;
+    margin: 0;
+  }
+  .float a {
+    color: white;
+    transition: color 0.3s ease;
+  }
+  @keyframes bounce-left {
+    0%, 100% { transform: translateX(0) scale(calc(1 / var(--zoom))); }
+    50% { transform: translateX(-5px) scale(calc(1 / var(--zoom))); }
+  }
+  .float:hover {
+    animation: bounce-left 0.3s ease;
+  }
+  .float:hover a {
+    text-decoration: none;
+    color: #cb63cc;
+  }
+  .outline-on-hover:hover {
+    text-shadow: var(--outline-text-shadow-white);
+  }
+</style>
+
+<div class="navigation">
+  <div style=`visibility: ${ backButton ? "visible" : "hidden"}` class="float"><a id="goBackButton" class="outline-on-hover" href="/">←</a></div>
+  <h1>{Astro.props.title}</h1>
+  <nav>
+    <!-- <a href="/">Animated Texture</a>
+    <a href="/">Overview</a>
+    <a href="/">Lua Quickstart</a>
+    -->
+  </nav>
+</div>
+
+<script is:inline data-astro-rerun>
+  goBackButton = document.getElementById("goBackButton");
+
+  goBackButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      // Attempt to go back, but only if the previous URL is the same origin
+      const previousURL = document.referrer || "https://example.com";
+      if (!previousURL || new URL(previousURL).origin === window.location.origin) {
+        window.history.back();
+        return;
+      }
+    }
+    // fallback if no previous history or different origin
+    window.location.href = goBackButton.getAttribute("href");
+  });
+
+</script>

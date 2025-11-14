@@ -1,11 +1,12 @@
 ---
 title: Figura Lua Scripts
 article: true
+description: Introduction to Figura specific concepts after you have learned the lua basics.
 ---
 
-Now that you [know how to program](/lua-quickstart), you should be able to use [the wiki](https://github.com/KitCat962/FiguraRewriteRewrite/wiki) to get what you need.
+Now that you [know how to program](/lua-quickstart), you should be able to use <a href="https://figura-wiki.pages.dev/" target="_blank" rel="noopener noreferrer">the wiki</a> to get what you need.
 
-Before you start, note that there is a [Figura VSCode extension](https://marketplace.visualstudio.com/items?itemName=Manuel-Underscore.figura) which provides autocomplete for BlockBench models and [Figura docs](https://github.com/GrandpaScout/FiguraRewriteVSDocs) to provide autocomplete for all Figura features. (To install in VSCode, click on extensions icon to the left, search for "Figura", click install. Docs need to be downloaded manually.)
+Before you start, note that there is a <a href="https://marketplace.visualstudio.com/items?itemName=Manuel-Underscore.figura" target="_blank" rel="noopener noreferrer">Figura VSCode extension</a> which provides autocomplete for BlockBench models and <a href="https://github.com/GrandpaScout/FiguraRewriteVSDocs" target="_blank" rel="noopener noreferrer">Figura docs</a> to provide autocomplete for all Figura features. (To install in VSCode, click on extensions icon to the left, search for "Figura", click install. Docs need to be downloaded manually.)
 
 # Basics
 
@@ -32,7 +33,7 @@ You will do most stuff inside the `tick` function. Note that you can have multip
 
 Figura provides a variable called `models` which contains all your blockbench files. This will give you access to your BlockBench models. You can access a specific model with `models.filename`. It is structured the exact same way the outliner in BlockBench shows your cubes and groups.
 
-![outliner-1](/assets/outliner-1.png)
+![outliner-1](../assets/outliner-1.png)
 
 ```lua
 models.mymodel.Head.Hat:setVisible(false) -- hides the hat

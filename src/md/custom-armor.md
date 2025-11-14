@@ -1,16 +1,17 @@
 ---
 title: Custom Armor
 article: true
+description: Learn how to detect what armor you are wearing and react with your model accordingly.
 ---
 
 There are several ways to make custom armor. Let's take a look at a few of them:
 
-- Resizing/Repositioning vanilla armor
+- Resizing / Repositioning vanilla armor
 - Custom armor using custom texture
 - Custom armor using vanilla textures
 - Unique shapes for different materials
 
-# Resizing/Repositioning vanilla armor
+# Resizing / Repositioning vanilla armor
 
 If your model is humanoid and has roughly the same proportions of the vanilla player, it might be enough to just slightly move the vanilla armor around. To do this, simply use `setPos` and `setScale` like so:
 
@@ -40,16 +41,16 @@ Boots | 1
 
 Here is an example on how to make a helmet:
 
-![Duplicate the Head](./assets/blockbench-1.png)
-![Change UV](./assets/blockbench-2.png)
+![Duplicate the Head](../assets/blockbench-1.png)
+![Change UV](../assets/blockbench-2.png)
 
 It might look a little big in BlockBench, but in game it will actually look fine:
 
-![What it looks like in game](./assets/minecraft-4.png)
+![What it looks like in game](../assets/minecraft-4.png)
 
 After you made your complete set of custom armor, you can then add multiple materials for it to switch to. I have added a chestplate and 4 materials for demonstration. Note that you can use the "Mirror UV" button for the left arm or leg to flip the texture the correct way.
 
-![More materials](./assets/blockbench-3.png)
+![More materials](../assets/blockbench-3.png)
 
 Now we will make a script that enables or disables our parts whenever we wear armor, and also checks what kind of armor we are wearing to decide what material to show.
 
@@ -111,7 +112,7 @@ end
 
 Now this almost works, the only thing missing is the leather color.
 
-![Leather not colored](./assets/minecraft-5.png)
+![Leather not colored](../assets/minecraft-5.png)
 
 We can use the following function to get the color of an armor piece:
 
@@ -137,7 +138,7 @@ models.model.LeftArm.Chestplate:setColor(getColor(chestplate))
 
 And there we go!
 
-![Leather colors](./assets/minecraft-6.png)
+![Leather colors](../assets/minecraft-6.png)
 
 # Custom armor using vanilla textures
 
@@ -147,7 +148,7 @@ For this it is useful to import one of the texture files into your BlockBench pr
 
 As you can see, the UVs are a little stretched (double it's height to be exact). This is because the armor texture file is 32 pixels high, but the models texture is 64 pixels high. To stretch individual faces you must be using per-face-UV mode.
 
-![More materials](./assets/blockbench-4.png)
+![More materials](../assets/blockbench-4.png)
 
 In our script, instead of UV offsets we will now be using vanilla texture file names:
 
@@ -172,13 +173,13 @@ models.model.LeftArm.Chestplate:setPrimaryTexture("Resource", material(chestplat
 
 Now our armor works even with a resource pack! (I am using Faithful 32x here)
 
-![Resource pack armor](./assets/minecraft-7.png)
+![Resource pack armor](../assets/minecraft-7.png)
 
 # Unique shapes for different materials
 
 Lastly, what if you wanted to make different shapes for your materials. Let's make the golden helmet look like a crown. I made a really quick crown model (these cubes sticking out just use the top face texture of the helmet):
 
-![Crown model](./assets/blockbench-5.png)
+![Crown model](../assets/blockbench-5.png)
 
 Remember that the texture in BB is not actually going to be used by our model! Instead, add a line to our `setTexture`s (or `setUV`s, if you are using custom texture):
 
@@ -192,4 +193,4 @@ Then make sure that it will only be visible if the player is wearing gold:
 mdoels.model.Head.CrownParts:setVisible(helmet.id == "minecraft:golden_helmet")
 ```
 
-![Crown in game](./assets/minecraft-8.png)
+![Crown in game](../assets/minecraft-8.png)

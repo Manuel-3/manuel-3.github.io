@@ -1,0 +1,141 @@
+---
+import { ClientRouter } from "astro:transitions";
+
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/ico" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro Basics</title>
+	</head>
+	<body>
+    <slot />
+    <ClientRouter fallback="none"/>
+	</body>
+</html>
+
+<script>
+  function updateZoom() {
+    const zoom = window.devicePixelRatio;
+    document.documentElement.style.setProperty("--zoom", zoom.toString());
+  }
+  window.addEventListener("resize", updateZoom);
+  updateZoom();
+</script>
+
+<style is:global>
+  :root {
+    --zoom: 1;
+    --gradient: linear-gradient(45deg, #cb63cc 0%, #5b69b3 100%);
+    --gradient-horizonzal: linear-gradient(90deg, #cb63cc 0%, #5b69b3 100%);
+    --outline-text-shadow-black: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    --outline-text-shadow-white: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+    --outline-text-shadow-purple: -1px -1px 0 #cb63cc, 1px -1px 0 #cb63cc, -1px 1px 0 #cb63cc, 1px 1px 0 #cb63cc;
+  }
+
+  @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter-Italic-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  }
+  
+  /* @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter-Variable.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter-VariableItalic.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  } */
+
+	html,
+	body {
+    margin: 0;
+		width: 100%;
+		height: 100%;
+    color: #a8a8a8;
+    background-color: #181a1b;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+	}
+  a {
+    font-weight: 400;
+    color: #cb63cc; /* #67eaa9; */
+    text-decoration: none;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s ease;
+  }
+  a:hover {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: transparent;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  p.readingTime {
+    font-size: 0.9em;
+    color: #737373;
+  }
+  p.readingTime::before {
+    content: "⏳ ";
+  }
+  img {
+    border-radius: .5rem;
+    display: block;
+    margin: 1rem auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .astro-code {
+    border: 2px solid #233b52;
+    border-radius: .5rem;
+    padding: .5rem 1rem;
+    font-size: 0.9em;
+  }
+  p > code,
+  details > summary > code {
+    background-color: #ffffff15;
+    padding: .1rem .3rem;
+    border-radius: .3rem;
+    font-size: 0.9em;
+  }
+  summary {
+    cursor: pointer;
+    padding: .3rem 0;
+    font-weight: bold !important;
+  }
+  details {
+    background-color: #233b52;
+    border-radius: .5rem;
+    padding-top: .1rem;
+    padding-bottom: .1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+</style>

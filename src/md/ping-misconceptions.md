@@ -1,6 +1,12 @@
 ---
 title: Ping Misconceptions
 article: true
+description: Explanation about the fundamental concept of how exactly Figura scripts run. After this guide you will never be confused about pings ever again.
+# todo:
+# interaction with avatarvars
+# ping rate limits
+# ping args type restrictions
+# player not loaded in ping
 ---
 
 This page is meant to explain how Figura actually works behind the scenes, specifically for lua scripts and pings. This should clear up some common misconceptions a lot of Figura beginners have, and make you much more confident when making your lua scripts.
@@ -13,7 +19,7 @@ Pings are only needed in very specific situations. After reading this section, y
 
 The most important thing to understand when writing a Figura script is that your script does not only run on your computer. Actually, when you upload your avatar (models, textures, scripts...) to the cloud, every other player on your server has to download this avatar to their own computers in order to display the avatar on your player character. And that means they also download your script, and **run your script on their own PC**.
 
-![How uploading an avatar works](./assets/misconceptions/cloud-upload.png)
+![How uploading an avatar works](../assets/misconceptions/cloud-upload.png)
 
 This of course also applies for the opposite direction, any avatar from your friends on the minecraft server are also sent to you!
 
@@ -27,15 +33,15 @@ Lets first understand when you **don't** need pings. To do this, you can imagine
 
 So your own PC already knows all these things about your friend, and because your friends script is running on your PC as well, all of these things just work. If the script wants to check if the player is under water it can just do that by itself.
 
-![Regular function call without a ping](./assets/misconceptions/regular-fn.png)
+![Regular function call without a ping](../assets/misconceptions/regular-fn.png)
 
 Both instances of the script in this case are in sync and just carry on like normal. So now lets use the action wheel as an example on why pings are necessary. Consider: If you look at another player, can you see their action wheel opening and can you see them click an action? No, you do not have the information if another player is using the action wheel right now. If you just use regular functions it would look like this:
 
-![Action wheel without ping](./assets/misconceptions/action-no-ping.png)
+![Action wheel without ping](../assets/misconceptions/action-no-ping.png)
 
 But if you use a ping, it will notify every other instance of your script to also run this ping.
 
-![Action wheel without ping](./assets/misconceptions/action-with-ping.png)
+![Action wheel without ping](../assets/misconceptions/action-with-ping.png)
 
 So in conclusion, you only need pings if **the information youre using is not available to other people**.
 
@@ -115,7 +121,7 @@ Figura only loads an avatar from the cloud if it is necessary. This is to preven
 
 So what this means is, if you send an action wheel ping, but no one has loaded your avatar, then no one will know that you have just switched into your awesome new outfit. If they come into your render distance they will still see the boring old you.
 
-![Desync when someone isnt in render distance](./assets/misconceptions/render-dist.png)
+![Desync when someone isnt in render distance](../assets/misconceptions/render-dist.png)
 
 To fix this, you will need to continuously update your status by sending pings to everyone who might not have gotten the memo yet.
 
@@ -168,7 +174,7 @@ end)
 
 This builds on top of the previos issue with people not having your avatar loaded when you send a ping. Consider the same situation as before where we have a desynced outfit due to the person not being nearby. The issue with the above code is, that if the value is already desynced, it is impossible for it to sync back up. This is because each instance of the script is working with a different state already, simply flipping its own state when the ping is called.
 
-![Unfixable desync](./assets/misconceptions/unfixable-desync.png)
+![Unfixable desync](../assets/misconceptions/unfixable-desync.png)
 
 When you use pings it is important to consider what data is used as the "input" or "trigger" for code that happens inside the ping. If a ping uses input from the local instance of the script then this can always cause desync! In the toggleOutfit ping you can see that we use ("input") the value (or state) of a regular variable in this instance of the script.
 
@@ -202,7 +208,7 @@ action:setOnLeftClick(function()--      |
 end)
 ```
 
-![Unfixable desync](./assets/misconceptions/send-state.png)
+![Unfixable desync](../assets/misconceptions/send-state.png)
 
 Finally, the best practice is to make sure the data being sent is synced, but also occasionally resync on a timer anyway because you might not click the action wheel for some time and it wouldn't be nice to only resync when you press the button again.
 

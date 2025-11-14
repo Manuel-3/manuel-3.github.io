@@ -196,15 +196,15 @@ What **must** happen instead in order to fix the desync is to **send the actuall
 local outfitEnabled = false
 
 function pings.setOutfit(state) -- this state is provided by the host
---                  input               ^
---                  vvvvv               |
-    outfitEnabled = state--             |
---  ^^^^^^^^^^^^^                       |
---     output                           |
-end--                                   |
---                                      |
-action:setOnLeftClick(function()--      |
-    pings.setOutfit(not outfitEnabled)--+
+--                  input                 ^
+--                  vvvvv                 |
+    outfitEnabled = state --              |
+--  ^^^^^^^^^^^^^                         |
+--     output                             |
+end--                                     |
+--                                        |
+action:setOnLeftClick(function()--        |
+    pings.setOutfit(not outfitEnabled)----+
 end)
 ```
 

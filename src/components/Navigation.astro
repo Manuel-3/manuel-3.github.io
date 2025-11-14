@@ -41,7 +41,7 @@ const backButton: boolean = Astro.props.backButton ?? true;
     }
   }
   .float a {
-    color: white;
+    color: var(--theme-bright-text-color);
     transition: color 0.3s ease;
   }
   @keyframes bounce-left {
@@ -53,10 +53,10 @@ const backButton: boolean = Astro.props.backButton ?? true;
   }
   .float:hover a {
     text-decoration: none;
-    color: #cb63cc;
+    color: var(--purple-light);
   }
   .outline-on-hover:hover {
-    text-shadow: var(--outline-text-shadow-white);
+    text-shadow: var(--theme-outline-text-shadow);
   }
 </style>
 

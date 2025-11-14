@@ -12,10 +12,50 @@ import { ClientRouter } from "astro:transitions";
 		<title>Manuel-3 Github.io</title>
 	</head>
 	<body>
+    <div class="float"><button id="theme-toggle" aria-label="Toggle theme">☀︎</button></div>
     <slot />
     <ClientRouter fallback="none"/>
 	</body>
 </html>
+
+<script is:inline data-astro-rerun>
+  theme = (() => {
+    const localStorageTheme = localStorage?.getItem("theme") ?? '';
+    if (['dark', 'light'].includes(localStorageTheme)) {
+      return localStorageTheme;
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+      return 'light';
+  })();
+
+  if (theme === 'light') {
+    document.documentElement.classList.remove('dark');
+  } else {
+    document.documentElement.classList.add('dark');
+  }
+
+  setTimeout(() => {
+    document.documentElement.classList.add('theme-loaded');
+  }, 1);
+
+  window.localStorage.setItem('theme', theme);
+
+  try {
+    document.getElementById("theme-toggle")?.removeEventListener("click", handleToggleClick);
+  } catch {}
+  
+  handleToggleClick = () => {
+    const element = document.documentElement;
+    element.classList.toggle("dark");
+
+    const isDark = element.classList.contains("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }
+
+  document.getElementById("theme-toggle")?.addEventListener("click", handleToggleClick);
+</script>
 
 <script>
   function updateZoom() {
@@ -26,15 +66,83 @@ import { ClientRouter } from "astro:transitions";
   updateZoom();
 </script>
 
+<style>
+    .float {
+    position: fixed;
+    top: 0.1rem;
+    right: 1rem;
+    transform: scale(calc(1 / var(--zoom)));
+    padding: 0;
+    margin: 0;
+    z-index: 1000;
+    transform: scale(calc(1 / var(--zoom)));
+    @media screen and (max-width: var(--blog-content-width)) {
+      display: none;
+    }
+  }
+  .float button {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--theme-bright-text-color);
+    font-size: 3rem;
+    transition: color 0.3s ease;
+  }
+  .float button:hover {
+    color: var(--theme-background-color);
+  }
+</style>
+
 <style is:global>
   :root {
+    --purple-light: #cb63cc;
+    --purple-dark: #5b69b3;
+
     --zoom: 1;
     --blog-content-width: 55rem;
-    --gradient: linear-gradient(45deg, #cb63cc 0%, #5b69b3 100%);
-    --gradient-horizonzal: linear-gradient(90deg, #cb63cc 0%, #5b69b3 100%);
-    --outline-text-shadow-black: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    --outline-text-shadow-white: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-    --outline-text-shadow-purple: -1px -1px 0 #cb63cc, 1px -1px 0 #cb63cc, -1px 1px 0 #cb63cc, 1px 1px 0 #cb63cc;
+    --gradient: linear-gradient(45deg, var(--purple-light) 0%, var(--purple-dark) 100%);
+    --gradient-horizonzal: linear-gradient(90deg, var(--purple-light) 0%, var(--purple-dark) 100%);
+    --outline-text-shadow-purple: -1px -1px 0 var(--purple-light), 1px -1px 0 var(--purple-light), -1px 1px 0 var(--purple-light), 1px 1px 0 var(--purple-light);
+
+    --theme-background-color: #f4e4f8;
+    --theme-text-color: #181a1b;
+    --theme-bright-text-color: #181a1b;
+    --theme-outline-text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    --theme-soft-shadow: 15px 15px 40px #939393;
+    --theme-code-block-border-color: #dbc8dc;
+    --theme-collapsible-section-background-color: #bcd8f1;
+    --theme-collapsible-section-inline-code-overlay-color: #00000015;
+  }
+
+  :root.dark {
+    --theme-background-color: #181a1b;
+    --theme-text-color: #a8a8a8;
+    --theme-bright-text-color: white;
+    --theme-outline-text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+    --theme-soft-shadow: 15px 15px 40px #090909;
+    --theme-code-block-border-color: #233b52;
+    --theme-collapsible-section-background-color: #233b52;
+    --theme-collapsible-section-inline-code-overlay-color: #ffffff15;
+  }
+  
+  :root * {
+    transition: none;
+  }
+
+  /* enable color transition for theme button after load */
+  :root.theme-loaded * {
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+
+  /* shiki dark mode */
+  :root.dark .astro-code,
+  :root.dark .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    /* Optional, if you also want font styles */
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
   }
 
   @font-face {
@@ -74,8 +182,8 @@ import { ClientRouter } from "astro:transitions";
     margin: 0;
 		width: 100%;
 		height: 100%;
-    color: #a8a8a8;
-    background-color: #181a1b;
+    color: var(--theme-text-color);
+    background-color: var(--theme-background-color);
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
     font-size: 18px;
     font-weight: 400;
@@ -83,7 +191,7 @@ import { ClientRouter } from "astro:transitions";
 	}
   a {
     font-weight: 400;
-    color: #cb63cc; /* #67eaa9; */
+    color: var(--purple-light); /* #67eaa9; */
     text-decoration: none;
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s ease;
@@ -114,14 +222,18 @@ import { ClientRouter } from "astro:transitions";
     height: auto;
   }
   .astro-code {
-    border: 2px solid #233b52;
+    border: 2px solid var(--theme-code-block-border-color);
     border-radius: .5rem;
     padding: .5rem 1rem;
     font-size: 0.9em;
+    transition: none !important;
+  }
+  .astro-code span {
+    transition: none !important;
   }
   p > code,
   details > summary > code {
-    background-color: #ffffff15;
+    background-color: var(--theme-collapsible-section-inline-code-overlay-color);
     padding: .1rem .3rem;
     border-radius: .3rem;
     font-size: 0.9em;
@@ -129,10 +241,10 @@ import { ClientRouter } from "astro:transitions";
   summary {
     cursor: pointer;
     padding: .3rem 0;
-    font-weight: bold !important;
+    font-weight: 600 !important;
   }
   details {
-    background-color: #233b52;
+    background-color: var(--theme-collapsible-section-background-color);
     border-radius: .5rem;
     padding-top: .1rem;
     padding-bottom: .1rem;

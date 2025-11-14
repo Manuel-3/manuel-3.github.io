@@ -40,11 +40,9 @@ const readingTime = Math.ceil(rawContentWithoutDetails.split(/[^A-Za-z0-9_]+/).l
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    /* width: 48px; */
-    /* height: 48px; */
     border: none;
     background: transparent;
-    color: white;
+    color: var(--theme-bright-text-color);
     font-size: 3rem;
     cursor: pointer;
     opacity: 0;
@@ -64,7 +62,7 @@ const readingTime = Math.ceil(rawContentWithoutDetails.split(/[^A-Za-z0-9_]+/).l
   }
   #scrollToTop:hover {
     animation: bounce-up 0.3s ease;
-    color: #cb63cc;
+    color: var(--purple-light);
   }
 </style>
 

@@ -1,6 +1,5 @@
 ---
-title: Animated Texture
-location: /animated-texture
+title: Animated Textures
 article: true
 description: Short guide for making animated textures using lua. Shows different approaches to fit whatever texture requirements you have.
 ---

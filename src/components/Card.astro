@@ -6,9 +6,9 @@
     .card {
         background-image: var(--gradient-horizonzal);
         max-width: 250px;
-        height: 350px;
+        min-height: 350px;
         border-radius: 1rem;
-        padding: 3px;
+        padding: 3px; /* Border thickness */
         box-shadow: 15px 15px 40px #090909;
     }
     .title {
@@ -41,9 +41,9 @@
     }
 </style>
 
-<div class="card" transition:name={Astro.props.title}>
+<div class="card">
     <a class="link" href={Astro.props.href}>
-        <div class="title">{Astro.props.title}</div>
+        <div class="title" transition:name={Astro.props.title}>{Astro.props.title}</div>
         <div class="description">{Astro.props.description}</div>
     </a>
 </div>

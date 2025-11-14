@@ -1,6 +1,5 @@
 ---
 title: Lua Quickstart
-location: /lua-quickstart
 article: true
 description: Short introduction to the lua programming language for absolute beginners.
 ---

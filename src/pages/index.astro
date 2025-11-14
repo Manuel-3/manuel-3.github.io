@@ -1,0 +1,33 @@
+---
+import type { MarkdownInstance } from 'astro';
+import type Frontmatter from '../types/frontmatter';
+import Layout from '../layouts/Layout.astro';
+import path from 'path';
+import Card from '../components/Card.astro';
+
+const posts = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>('../md/*.md', { eager: true }));
+---
+
+<style>
+  .container {
+    padding: 10rem;
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    flex-wrap: wrap;
+  }
+</style>
+
+<Layout>
+	<!-- <Navigation backButton={false} viewTransition={false} title="Overview" /> -->
+  <div class="container">
+    {posts.map(post =>
+      <Card
+        title={post.frontmatter.title}
+        description={post.frontmatter.description || "lorem ipsum dolor sit amet"}
+        href={'/'+path.basename(post.file).replace('.md','')}
+      />
+    )}
+  </div>
+  
+</Layout>

@@ -1,0 +1,107 @@
+---
+import type { GetStaticPaths, MarkdownInstance } from "astro";
+import Layout from "../layouts/Layout.astro";
+import type Frontmatter from "../types/frontmatter";
+import path from "path";
+import Navigation from "../components/Navigation.astro";
+
+export const getStaticPaths = (() => {
+  return Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>('../md/*.md', { eager: true }))
+    .map((post) => {
+      return {
+        params: {
+          post: path.basename(post.file).replace('.md', ''),
+        },
+      };
+    })
+}) satisfies GetStaticPaths;
+
+const { post : postName } = Astro.params;
+
+const thePost = Object.values(import.meta.glob<MarkdownInstance<Frontmatter>>('../md/*.md', { eager: true }))
+  .find(p => path.basename(p.file).replace('.md','') === postName);
+
+const Content = thePost!.Content;
+const frontmatter = thePost!.frontmatter;
+
+const rawContentWithoutDetails = thePost!.rawContent().replace(/<details>[\s\S]*?<\/details>/g, '');
+const readingTime = Math.ceil(rawContentWithoutDetails.split(/[^A-Za-z0-9_]+/).length / 200);
+---
+
+<style>
+  .container {
+		max-width: 55rem;
+		margin: auto;
+    padding-bottom: 1rem;
+	}
+  #scrollToTop {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    /* width: 48px; */
+    /* height: 48px; */
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+    transform: scale(calc(1 / var(--zoom)));
+    transition: color 0.3s ease;
+  }
+  #scrollToTop.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  @keyframes bounce-up {
+    0%, 100% { transform: translateY(0) scale(calc(1 / var(--zoom))); }
+    50% { transform: translateY(-5px) scale(calc(1 / var(--zoom))); }
+  }
+  #scrollToTop:hover {
+    animation: bounce-up 0.3s ease;
+    color: #cb63cc;
+  }
+</style>
+
+<Layout>
+  <div transition:name={frontmatter.title}>
+    <Navigation title={frontmatter.title} />
+    <div class="container">
+      <div class="float">
+        <button id="scrollToTop" aria-label="Scroll to top">^</button>
+      </div>
+      {frontmatter.article && 
+        <p class="readingTime">~{readingTime} minute read</p>
+      }
+      <Content/>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline data-astro-rerun>
+    btn = document.getElementById("scrollToTop");
+    goBackButton = document.getElementById("goBackButton");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 500) {
+        btn.classList.add("show");
+      } else {
+        btn.classList.remove("show");
+      }
+      if (window.scrollY > 50) {
+        goBackButton.classList.remove("outline-on-hover")
+      } else {
+        goBackButton.classList.add("outline-on-hover")
+      }
+    });
+
+    btn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+</script>

@@ -8,7 +8,7 @@ import { ClientRouter } from "astro:transitions";
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/ico" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Manuel-3 Github.io</title>
+		<title>{ Astro.props.title || "Manuel-3 Github.io" }</title>
 	</head>
 	<body>
     <div class="float"><button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">☀︎</button></div>

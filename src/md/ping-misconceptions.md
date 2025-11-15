@@ -2,11 +2,6 @@
 title: Ping Misconceptions
 article: true
 description: Explanation about the fundamental concept of how exactly Figura scripts run. After this guide you will never be confused about pings ever again.
-# todo:
-# interaction with avatarvars
-# ping rate limits
-# ping args type restrictions
-# player not loaded in ping
 ---
 
 This page is meant to explain how Figura actually works behind the scenes, specifically for lua scripts and pings. This should clear up some common misconceptions a lot of Figura beginners have, and make you much more confident when making your lua scripts.
@@ -29,6 +24,18 @@ But what does that mean and why does it matter? Well, if you think about it, if 
 
 What even is a ping? It is really simple: A ping is just like a regular function in lua, except that it also goes across the Figura cloud to every other player that has downloaded your script and runs the function there too. This means you only need a ping if you must send **additional information** to other players **that they do not already know about**.
 
+<details>
+
+<summary>Side note: Limitations of pings</summary>
+
+Due to the fact that pings are sent over the network, there are a few restrictions to keep in mind.
+
+Pings are rate limited, can only send certain data types over the network, and they are also limited in byte size.
+
+Read more about it <a href="https://figura-wiki.pages.dev/tutorials/Pings#ping-rate-limiting" target="_blank" rel="noopener noreferrer">on the wiki ↗</a>.
+
+</details>
+
 Lets first understand when you **don't** need pings. To do this, you can imagine looking at your friend in multiplayer and thinking about what pieces of **information** you know about them. For example, you know where they are (`player:getPos()`), you know what armor they are wearing (`player:getItem()`), you know what item they are holding in their hand `player:getHeldItem()`, you can see how fast they are moving (`player:getVelocity()`), you can see their head turn and look around `vanilla_model.HEAD:getOriginRot()`, you can see if they are mining blocks `player:isSwingingArm()`, and much more.
 
 So your own PC already knows all these things about your friend, and because your friends script is running on your PC as well, all of these things just work. If the script wants to check if the player is under water it can just do that by itself.
@@ -44,6 +51,62 @@ But if you use a ping, it will notify every other instance of your script to als
 ![Action wheel without ping](../assets/misconceptions/action-with-ping.png)
 
 So in conclusion, you only need pings if **the information youre using is not available to other people**.
+
+<details>
+
+<summary>Advanced: I lied.</summary>
+
+Actually a ping is not quite like a regular function like I claimed before. Normally when you call a function, the code inside of it is executed immediately, and when the function finishes it runs the code below it.
+
+```lua
+function fn()
+    print("2")
+end
+function events.tick()
+    print("1")
+    fn()
+    print("3")
+end
+```
+
+The above code would print "1 2 3". However, if you do this with a ping instead, like so:
+
+```lua
+function pings.fn()
+    print("2")
+end
+function events.tick()
+    print("1")
+    pings.fn()
+    print("3")
+end
+```
+
+Then we would have the output "1 3 2". This is because pings are actually scheduled to run after the current execution window on the host.
+
+Now it is a different story on non-hosts (everyone else that youre playing with on the Minecraft server). It can take several ticks for the network to deliver the ping to other people. So in general you can't rely on any certain fixed time frame for pings to run.
+
+There is also a setting within Figura called "Sync pings" which lets you simulate the same behavior that non-hosts have by actually waiting for the Figura cloud to respond with your own ping before running it.
+
+Additionally it might be good to mention that pings received by non-hosts are executed only after the current event finishes, so you don't have to worry about weird behavior such as in the example below, where it wouldn't be good for a ping to run in between the if check and the print statement possibly setting `n` to 0. Instead it will always execute the whole tick event, and only then run a received ping.
+
+```lua
+local n = 0
+
+function pings.setN(x)
+    n = x
+end
+
+function events.tick()
+    if n ~= 0 then
+        print(1 / n)
+    end
+end
+```
+
+Another difference to regular functions is that the non-host script instance will not call a ping by itself at all. If the host sees the line `pings.doSomething()` then it will run it like explained above, while a non-host script getting to that line simply does absolutely nothing. Non-hosts will ever only run pings if they are received over the network.
+
+</details>
 
 ## Do I need a ping to play an animation?
 
@@ -117,7 +180,7 @@ Yes you have read that right. If you are using the action wheel, and you are eve
 
 Now why might this happen? I already hinted at it in the previous section, the issue is **not everyone on the entire server can see you in their render distance, or even has your avatar (+script) downloaded and running.**
 
-Figura only loads an avatar from the cloud if it is necessary. This is to prevent lag, unnecessary network downloads and more. In general an avatar is only loaded if that person is visible to you, for example by them being inside your render distance or if the tab menu is viewed (some avatars edit tab menu) or a chat message from them is received (some avatars change chat name) or maybe if you have a player head of theirs (figura avatars can attach to player head blocks).
+Figura only loads an avatar from the cloud if it is necessary. This is to prevent lag, unnecessary network downloads and more. In general an avatar of another person is only loaded if that person is visible to you, for example by them being inside your render distance or if the tab menu is viewed (some avatars edit tab menu) or a chat message from them is received (some avatars change chat name) or maybe if you have a player head of theirs (figura avatars can attach to player head blocks).
 
 So what this means is, if you send an action wheel ping, but no one has loaded your avatar, then no one will know that you have just switched into your awesome new outfit. If they come into your render distance they will still see the boring old you.
 
@@ -146,6 +209,15 @@ function events.tick()
     if world.getTime() % 200 == 0 then -- every 10 seconds (200 ticks)
         pings.updateStatuePos(statuePos)
     end
+end
+```
+
+It is important to note that the opposite situation can also happen: What if your avatar is loaded, but your player character isn't? This is common because of the loading requirements I mentioned above, such as looking at the tab menu or receiving a chat message from someone. So if the avatar is loaded, but the player is not, then any attempt to get PlayerAPI related data will result in an error! This is why it is important to always check if the player is loaded in a ping, before you want access PlayerAPI, for example by just stopping the rest of the ping to run.
+
+```lua
+function pings.doSomething()
+    if not player:isLoaded() then return end -- do not continue if player isn't loaded
+    local pos = player:getPos() -- note: you only need to have the check if you use `player` in this ping, like here for example
 end
 ```
 
@@ -233,6 +305,16 @@ function events.tick()
 end
 ```
 
+## What are avatarvars?
+
+Some people mix up pings with avatarvars, which is understandable because they both kind of make interaction between different people possible. But once you understand how scripts are actually being ran on hosts and non-hosts like explained right at the start of this guide, then you will easily be able to understand the differences here.
+
+Fundamentally, pings and avatarvars are completely different. Pings are network functions that a host can trigger on its own avatars script to send information to non-hosts that are also running the same avatars script. In contrast, avatarvars are a way to locally (no network going on here at all) share information between the script of one avatar, **to the script of a different avatar**.
+
+Learn more about avatarvars <a href="https://wiki.figuramc.org/index.php/Multiplayer_Avatar_Interaction" target="_blank" rel="noopener noreferrer">here ↗</a>.
+
+![Pings vs Avatarvars](../assets/misconceptions/avatarvars.png)
+
 ## You are a pro now!
 
-Congratulations, you have successfully mastered pings! Anything thrown at you is easily deflected by using pings in the correct situations! Thank you for taking your time reading this guide!
+Congratulations, you have successfully mastered pings! You will never use pings in the wrong situation ever again! Thank you for taking your time reading this guide!

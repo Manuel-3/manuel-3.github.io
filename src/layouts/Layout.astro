@@ -11,7 +11,7 @@ import { ClientRouter } from "astro:transitions";
 		<title>Manuel-3 Github.io</title>
 	</head>
 	<body>
-    <div class="float"><button id="theme-toggle" aria-label="Toggle theme">☀︎</button></div>
+    <div class="float"><button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">☀︎</button></div>
     <slot />
     <ClientRouter fallback="none"/>
 	</body>
@@ -89,6 +89,7 @@ import { ClientRouter } from "astro:transitions";
   }
   .float button:hover {
     color: var(--theme-background-color);
+    text-shadow: var(--theme-outline-text-shadow)
   }
 </style>
 

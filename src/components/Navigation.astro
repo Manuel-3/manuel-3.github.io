@@ -61,7 +61,7 @@ const backButton: boolean = Astro.props.backButton ?? true;
 </style>
 
 <div class="navigation" transition:name={Astro.props.title}>
-  <div style=`visibility: ${ backButton ? "visible" : "hidden"}` class="float"><a id="goBackButton" class="outline-on-hover" href="/">←</a></div>
+  <div style=`visibility: ${ backButton ? "visible" : "hidden"}` class="float"><a id="goBackButton" class="outline-on-hover" href="/" aria-label="Go back" title="Go back">←</a></div>
   <h1>{Astro.props.title}</h1>
   <nav>
     <!-- <a href="/">Animated Texture</a>

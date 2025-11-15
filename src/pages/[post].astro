@@ -81,6 +81,18 @@ if (headings) {
     animation: bounce-up 0.3s ease;
     color: var(--purple-light);
   }
+  #timeinfo {
+    display: flex;
+    justify-content: space-between;
+  }
+  .lastModified,
+  .readingTime {
+    font-size: 0.9em;
+    color: #737373;
+  }
+  .readingTime::before {
+    content: "⏳ ";
+  }
 </style>
 
 <style is:global>
@@ -161,9 +173,18 @@ if (headings) {
       <div class="float">
         <button id="scrollToTop" aria-label="Scroll to top" title="Scroll to top">^</button>
       </div>
-      {frontmatter.article && 
-        <p class="readingTime">~{readingTime} minute read</p>
-      }
+      <div id="timeinfo">
+        <p class="readingTime">
+          {frontmatter.article &&
+            <span>~{readingTime} minute read</span>
+          }
+        </p>
+        <p class="lastModified">
+          {frontmatter.modified && 
+            <span>{frontmatter.modified}</span>
+          }
+        </p>
+      </div>
       {frontmatter.article && tableOfContents != "" &&
         <div id="static-table-of-contents">
           <h3>Table of contents</h3>

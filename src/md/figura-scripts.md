@@ -2,6 +2,7 @@
 title: Figura Lua Scripts
 article: true
 description: Introduction to Figura specific concepts after you have learned the lua basics.
+modified: Jul 2023
 ---
 
 Now that you [know how to program](/lua-quickstart), you should be able to use <a href="https://figura-wiki.pages.dev/" target="_blank" rel="noopener noreferrer">the wiki ↗</a> to get what you need.

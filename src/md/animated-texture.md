@@ -2,6 +2,7 @@
 title: Animated Textures
 article: true
 description: Short guide for making animated textures using lua. Shows different approaches to fit whatever texture requirements you have.
+modified: Nov 2025
 ---
 
 Animating a texture in Figura works differently than in resource packs. Instead of a `.mcmeta` file, we use `ModelPart:setUV(u,v)` to change the texture coordinates a cube is using.

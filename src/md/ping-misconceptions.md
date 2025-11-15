@@ -2,6 +2,7 @@
 title: Ping Misconceptions
 article: true
 description: Explanation about the fundamental concept of how exactly Figura scripts run. After this guide you will never be confused about pings ever again.
+modified: Nov 2025
 ---
 
 This page is meant to explain how Figura actually works behind the scenes, specifically for lua scripts and pings. This should clear up some common misconceptions a lot of Figura beginners have, and make you much more confident when making your lua scripts.

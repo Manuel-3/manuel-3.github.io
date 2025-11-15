@@ -2,6 +2,7 @@
 title: Custom Armor
 article: true
 description: Learn how to detect what armor you are wearing and react with your model accordingly.
+modified: Jul 2023
 ---
 
 There are several ways to make custom armor. Let's take a look at a few of them:

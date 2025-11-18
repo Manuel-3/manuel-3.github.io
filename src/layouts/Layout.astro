@@ -13,11 +13,16 @@ import { ClientRouter } from "astro:transitions";
 	<body>
     <div class="float"><button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">☀︎</button></div>
     <slot />
-    <ClientRouter fallback="none"/>
+    <ClientRouter fallback="animate"/>
 	</body>
 </html>
 
 <script is:inline data-astro-rerun>
+  try {
+    clearTimeout(themeLoadedTimeout)
+  } catch {}
+  document.documentElement.classList.remove('theme-loaded');
+
   theme = (() => {
     const localStorageTheme = localStorage?.getItem("theme") ?? '';
     if (['dark', 'light'].includes(localStorageTheme)) {
@@ -35,10 +40,6 @@ import { ClientRouter } from "astro:transitions";
     document.documentElement.classList.add('dark');
   }
 
-  setTimeout(() => {
-    document.documentElement.classList.add('theme-loaded');
-  }, 1);
-
   window.localStorage.setItem('theme', theme);
 
   try {
@@ -54,6 +55,10 @@ import { ClientRouter } from "astro:transitions";
   }
 
   document.getElementById("theme-toggle")?.addEventListener("click", handleToggleClick);
+
+  themeLoadedTimeout = setTimeout(() => {
+    document.documentElement.classList.add('theme-loaded');
+  }, 1);
 </script>
 
 <script>

@@ -125,6 +125,10 @@ So the list of the most important things that require pings is:
     - HostAPI
     - Action Wheel
     - Keybinds
+- Things that are only run on host for security reasons
+    - NetworkingAPI
+    - FileAPI
+    - ConfigAPI
 - Input events
     - events.mouse_scroll
     - events.mouse_move
@@ -132,10 +136,10 @@ So the list of the most important things that require pings is:
     - events.key_press
     - events.char_typed
 - Miscellaneous
-    - Player Inventory (except main/offhand/armor)
+    - Player Inventory (player:getNbt().Inventory) (except main/off-hand and armor)
     - events.chat_send_message
     - events.chat_receive_message (both chat message events only run on host)
-    - Anything that triggers by something happening at only one point in time
+    - Anything that triggers a state change by something happening at a certain point in time (see next chapter)
 
 ## Hidden desyncs.
 

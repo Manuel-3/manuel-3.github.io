@@ -281,7 +281,7 @@ You might be confused about the `(vanilla_model.HEAD:getOriginRot()+180)%360-180
 
 ### Pings
 
-Before actually reading any user input, note that pings are required. The are used to send information that is only available to the host (you) to all other players. This applies to all user input since what you type on your keyboard or click with your mouse is not automatically synced to other players. To make a ping, create a function inside the `pings` table, for example we make a custom ping named `setHat` to change the visibility of a model part hat:
+Before actually reading any user input, note that pings are required. They are used to send information that is only available to the host (you) to all other players. This applies to all user input since what you type on your keyboard or click with your mouse is not automatically synced to other players. To make a ping, create a function inside the `pings` table, for example we make a custom ping named `setHat` to change the visibility of a model part hat:
 
 ```lua
 function pings.setHat(value)

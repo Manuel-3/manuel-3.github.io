@@ -70,48 +70,38 @@ For the first part let's just use this dummy animation. To make it, I just expan
 
 ![Texture UV layout](../assets/texture-1.png)
 
-To animate it, all we have to do is make a script that cycles through these. To do this, we can use `world.getTime()` which gives us the time in game ticks, and `ModelPart:setUV(u,v)`.
-
-The `setUV` function shifts the UV box by a given amount. It will offset it relative to the default position we have given it in BlockBench, in this case the lower left corner. Since `setUV` takes a fraction as input (1 means whole texture size, 1/2 means half of the texture size, etc..) we can just shift it 1/8 every step to make it go through all 8 frames. Since the time increases by 1 every tick, we tie the UV to `time/8` which will make it shift 1/8 each tick.
+To animate it, all we have to do is make a script that cycles through these. To do this, we will first make a `time` variable that's just a counter that goes up each tick. You could also use `world.getTime()` instead but that can be inconsistent if the server is laggy, so just add this little code into your script:
 
 ```lua
+time = 0
 function events.tick()
-    local time = world.getTime() -- get current time
-    models.model.Head.Face:setUV(time/8,0) -- use it to shift the UV
+    time = time + 1    
 end
 ```
 
-Just to note, we will mostly just use `world.getTime()` in this tutorial because it is shorter if we dont need fine control over the timer, but it is effectively the same as just making a timer increase by 1 every tick like this:
+Then we can use the `ModelPart:setUV(u,v)` function, which shifts the UV box by a given amount. It will offset it relative to the default position we have given it in BlockBench, in this case the lower left corner. Since `setUV` takes a fraction as input (1 means whole texture size, 1/2 means half of the texture size, etc..) we can just shift it 1/8 every step to make it go through all 8 frames. Since the time increases by 1 every tick, we tie the UV to `time/8` which will make it shift 1/8 each tick.
 
 ```lua
-local frame = 0 -- new timer variable to count ticks
+time = 0
 function events.tick()
-    frame = frame + 1 -- increase timer ourselves
-    models.model.Head.Face:setUV(frame/8,0) -- use exactly the same as world time
+    time = time + 1    
+end
+
+function events.tick()
+    models.model.Head.Face:setUV(time/8,0) -- use the time variable to shift the UV
 end
 ```
-
-<details>
-
-<summary>Advanced: When not to use <code>world.getTime()</code> ?</summary>
-
-There are two reasons why you might not want to use `world.getTime()`.
-
-For one, if you want more control when exactly your timer is allowed to increase or you also want to be able to reset the timer, for example for a sort of cooldown, or for more control over the animation (which we will do later in this tutorial as well), then making a custom timer variable is the way to go.
-
-And secondly, if your program depends on a perfectly increasing timer to function, then you should not use world.getTime() as the time value it gives you can sometimes jump and skip some values if the minecraft server and your client become out of sync. In such a case the server sends the accurate world time to your client, making the time value jump and potentially skip over some values. This does not happen if you make a custom timer.
-
-</details>
 
 We don't even have to clamp the time value in between 0 and 7 because `setUV` just cycles around the texture if the value overflows.
 
 ![Animation in game](../assets/minecraft-1.gif)
 
+Note that the rest of the tutorial assumes you keep the little tick event for the `time` variable and we will not show it again from now on to save some space in the tutorial.
+
 If we want to make the animation slower, we can divide the time by some value to essentially make time go slower for our animation. Note that this will produce floating point values like 9/2=4.5, so it wouldn't shift the full 1/8 step and display some weird selection inbetween our frames. To fix this we can floor it to the next integer.
 
 ```lua
 function events.tick()
-    local time = world.getTime()
     models.model.Head.Face:setUV(math.floor(time/2)/8,0)
 end
 ```
@@ -135,7 +125,6 @@ Now let's suppose you wanted to use less frames. To prevent the UV from scrollin
 
 ```lua
 function events.tick()
-    local time = world.getTime()
     models.model.Head.Face:setUV((time % 4)/8,0)
 end
 ```
@@ -167,7 +156,6 @@ local frames = {
 }
 
 function events.tick()
-    local time = world.getTime()
     models.model.Head.Face:setUV(frames[(time % #frames) + 1])
 end
 ```
@@ -179,7 +167,7 @@ As you can see, it is now playing the blinking animation.
 
 ![Blinking animation](../assets/minecraft-2.gif)
 
-To make it not play continuously, we can wait a bit until we restart the animation. For this its easier to make our own timer variable, so that the time isnt always increased each tick automatically, but instead we can choose to wait and only increase it when we want the blink to happen. To do this we make a `frame` variable which will replace our usual `world.getTime()` and just tells us which frame we are currently displaying, and a `nextBlink` variable that stores the moment in time when we want the next blink to happen. We can even add a bit of randomness into the blinking delay by using `math.random(min,max)` which gives us a number between min and max.
+To make it not play continuously, we can wait a bit until we restart the animation. For this its easier to make our own timer variable, so that the time isnt always increased each tick automatically, but instead we can choose to wait and only increase it when we want the blink to happen. To do this we make a `frame` variable which will replace our usual `time` in this case and just tells us which frame we are currently displaying, and a `nextBlink` variable that stores the moment in time when we want the next blink to happen. We can even add a bit of randomness into the blinking delay by using `math.random(min,max)` which gives us a number between min and max.
 
 ```lua
 local frames = {

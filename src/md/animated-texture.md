@@ -129,7 +129,7 @@ function events.tick()
 end
 ```
 
-If you try adding this code in the tick event `print(time % 4)` it will print it in chat and you will see that it only ranges from 0 to 3 and then starts over again even if the world time is actually already much higher than 4.
+If you try adding this code in the tick event `print(time % 4)` it will print it in chat and you will see that it only ranges from 0 to 3 and then starts over again even if the time counter is actually already much higher than 4.
 
 ![Value output](../assets/chat-1.png)
 
@@ -183,11 +183,11 @@ local nextBlink = 0
 function events.tick()
     if frame > 4 then -- if we cycled through all 4 frames..
         frame = 1 -- ..reset animation..
-        nextBlink = world.getTime() + math.random(20,50) -- ..and choose the next blink time a random amount of ticks in the future
+        nextBlink = time + math.random(20,50) -- ..and choose the next blink time a random amount of ticks in the future
     end
     models.model.Head.Face:setUV(frames[frame]) -- regular setUV as always
-    -- now wait for the world time to be greater than our next blink time before increasing the animation frame
-    if nextBlink < world.getTime() then
+    -- now wait for the time to be greater than our next blink time before increasing the animation frame
+    if nextBlink < time then
         frame = frame + 1
     end
 end
@@ -196,3 +196,22 @@ end
 (Note that my screen recorder seemingly didn't manage to get enough fps to record all frames so the gif might look like some are skipped.)
 
 ![Blinking animation with waiting](../assets/minecraft-3.gif)
+
+If your texture is layed out in a grid shape instead of a single strip, then we can convert our time into U and V coordinates using this calculation:
+
+```lua
+u = time%width
+v = math.floor(time/width)
+```
+
+To implement that you could do something like below, with the example of a 4x4 grid on the texture:
+
+```lua
+local width = 4
+local height = 4
+function events.tick()
+    local u = time%width
+    local v = math.floor(time/width)
+    models.model.Head.Face:setUV(u/width,v/height)
+end
+```

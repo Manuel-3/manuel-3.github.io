@@ -443,6 +443,20 @@ The basic function to use for this is the `math.random()` function. It will retu
 
 Here is an assortment of different ranges other than just 0 to 1.
 
+<details>
+
+<summary>Note about `math.lerp` in the following code snippet.</summary>
+
+If you are not in an environment where `math.lerp` is defined, its just this:
+
+```lua
+function math.lerp(a,b,t)
+  return a + (b - a) * t
+end
+```
+
+</details>
+
 ```lua
 -- Float Range [0.0, 1.0)
 math.random()

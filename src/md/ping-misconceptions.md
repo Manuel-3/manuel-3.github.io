@@ -305,7 +305,7 @@ end)
 
 function events.tick()
     if world.getTime() % 200 == 0 then
-        pings.setGlassesEnabled(glassesEnabled)
+        pings.setOutfit(outfitEnabled)
     end
 end
 ```

@@ -2,7 +2,7 @@
 title: Animated Textures
 article: true
 description: Short guide for making animated textures using lua. Shows different approaches to fit whatever texture requirements you have.
-modified: Nov 2025
+modified: Oct 2026
 ---
 
 <details>

@@ -5,7 +5,56 @@ description: Short guide for making animated textures using lua. Shows different
 modified: Nov 2025
 ---
 
-Animating a texture in Figura works differently than in resource packs. Instead of a `.mcmeta` file, we use `ModelPart:setUV(u,v)` to change the texture coordinates a cube is using.
+<details>
+
+<summary>This page will explain how animated textures work and how you can do it yourself. But, if you prefer to use something premade instead, click here.</summary>
+
+Here is a premade texture animation function `Animated(part,speed,frames,horizontal)` that works for vertical or horizontal texture strips such as the ones in resource packs.
+
+Example usages:
+
+```lua
+Animated(cube) -- auto detect
+Animated(cube, 0.2) -- slower speed
+Animated(cube, 0.2, 5) -- has 5 frames
+Animated(cube, 0.2, 5, true) -- horizontal instead of vertical
+```
+
+To use it, first copy paste this code at the top of your script file:
+
+```lua
+do
+  local floor = math.floor
+  local function flrvec(v) return vec(floor(v.x),floor(v.y)) end
+  local parts = {}
+  local t = vec(0,0)
+  function events.tick()
+    for _, part in ipairs(parts) do
+      part[1]:uv(flrvec(t*part[3])/part[2])
+    end
+    t:add(1,1)
+  end
+  ---@param part ModelPart
+  ---@param speed? number
+  ---@param frames? number
+  ---@param horizontal? boolean
+  function Animated(part,speed,frames,horizontal)
+    speed = speed or 1
+    if part:getType() == "GROUP" then
+      assert(frames, "Animating a group requires a frame count")
+    else
+      local w,h = textures[next(part:getAllVertices())]:getDimensions():unpack()
+      if horizontal==nil then horizontal = w>h end
+      frames = frames or horizontal and w/h or h/w
+    end
+    table.insert(parts,{part,horizontal and vec(frames,1) or vec(1,frames),speed})
+  end
+end
+```
+
+</details>
+
+Animating a texture in Figura works differently to how it's done in resource packs. Instead of a `.mcmeta` file, we use `ModelPart:setUV(u,v)` to change the texture coordinates a cube is using.
 
 In this tutorial we are going to make a blinking animation. To make it a little easier, I have gone ahead and separated the face from the rest of the head. This is technically optional, but makes things easier because I only want the face to change, and not the entire head, since in figura we can only change UVs of the whole cube at once. (Duplicate the head cube, set the front face to transparent on the head, and all other sides except for the face to transparent on the duplicate. Make sure to be in Per-Face-UV mode for this)
 
